@@ -2,7 +2,7 @@
 
 # Teamspeak 3 Users Top10 per time on server
 # this script has to be executed every 5 minutes and polls the users currently on the server
-# if you want another timespan as 5 minutes, please modify the mysql statement at the end
+# if you want another timespan than 5 minutes, please modify the mysql statement at the end
 #
 # create a query login name+password in your TS3 server and also 
 # a appropriate database as following:
