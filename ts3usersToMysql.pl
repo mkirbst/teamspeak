@@ -4,9 +4,9 @@
 # this script has to be executed every 5 minutes and polls the users currently on the server
 # if you want another timespan than 5 minutes, please modify the mysql statement at the end
 #
-# create a query login name+password in your TS3 server and also 
-# a appropriate database as following:
-# CREATE TABLE IF NOT EXISTS `munin`.`ts3top` (`CLDBID` INT NOT NULL ,  `CLNAME` VARCHAR(64) NOT NULL ,  `Minutes` BIGINT,  PRIMARY KEY (`CLDBID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = u$
+# create a query login name+password in your TS3 server an put it into line 31 and also 
+# a appropriate database as following: (my testdatabase here is calles munin and the new table is named ts3top)
+# CREATE TABLE IF NOT EXISTS `munin`.`ts3top` (`CLDBID` INT NOT NULL ,  `CLNAME` VARCHAR(64) NOT NULL ,  `Minutes` BIGINT,  PRIMARY KEY (`CLDBID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 # dont forget to grant your mysql user privileges for this database
 
 use strict;
