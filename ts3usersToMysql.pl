@@ -76,7 +76,7 @@ foreach my $client ( @clients )
                                 my @TMPCLNAME = split("=", $clientpart);
                                 $CLNAME = @TMPCLNAME[1];
                                 ## clean up TS names from st**id id**ts who use every special char UTF16 has available in their TS names ....
-                                $CLNAME =~ s/[^a-zA-Z0-9._-]/_/g;
+                                $CLNAME =~ s/[^a-zA-Z0-9_-]/_/g;
                         }
 
                 }
