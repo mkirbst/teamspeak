@@ -1,40 +1,61 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 
 # Teamspeak 3 Users Top10 per time on server
 # this script has to be executed every 5 minutes and polls the users currently on the server
 # if you want another timespan than 5 minutes, please modify the mysql statement at the end
 #
+#
+# ---- howto create approriate mysql database ----
 # create a query login name+password in your TS3 server an put it into line 31 and also 
-# a appropriate database as following: (my testdatabase here is called munin and the new table is named ts3top)
-# CREATE TABLE IF NOT EXISTS `munin`.`ts3top` (`CLDBID` INT NOT NULL ,  `CLNAME` VARCHAR(64) NOT NULL ,  `Minutes` BIGINT,  PRIMARY KEY (`CLDBID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
-# dont forget to grant your mysql user privileges for this database
+# a appropriate database as following: (my testdatabase here is called ts3db and the new table is named ts3top)
+#
+# $ mysql -u root -p
+# mysql> CREATE DATABASE IF NOT EXISTS ts3db;
+# mysql> GRANT ALL ON *.* TO 'ts3queryuser'@'localhost' IDENTIFIED BY 'Start123!';
+# mysql> CREATE TABLE IF NOT EXISTS `ts3db`.`ts3top`\
+#     -> (`CLDBID` INT NOT NULL , `CLNAME` VARCHAR(64) NOT NULL , `Minutes` BIGINT, PRIMARY KEY (`CLDBID`))\ 
+#     -> ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+# mysql> FLUSH PRIVILEGES;
+# mysql> QUIT;
+
+
 
 use strict;
 use Net::Telnet;
 use DBI;
 
-my ($db_user, $db_name, $db_pass) = ('myts3mysqluser', 'myts3mysqldb', 'mySecretMysqlPassword');
+
+my $LOGFILE  = "ts3perl.log";
+
+# TS3 server variables
+my $TS3_HOSTNAME = "127.0.0.1";
+my $TS3_HOSTPORT = "10011";
+my $TS3_QUERYLOGIN = "queryadmin";
+my $TS3_QUERYPASSWORD = "OmzjE41R";
+
+# mysql variables
+my $DB_DATABASE	= "ts3db";
+my $DB_USERNAME = "ts3queryuser";
+my $DB_PASSWORD = "Start123!";
+
 
 
 #################
 ## telnet part ##
 #################
 
-# establish some global variables
-my $HOSTNAME = "127.0.0.1";
-my $HOSTPORT = "10011";
-my $logfile  = "ts3perl.log";
-
-my $telnet = new Net::Telnet ( Timeout=>10, Errmode=>'die', Input_log => $logfile);
-$telnet->open(Host => $HOSTNAME, Port => $HOSTPORT);
+my $telnet = new Net::Telnet ( Timeout=>10, Errmode=>'die', Input_log => $LOGFILE);
+$telnet->open(Host => $TS3_HOSTNAME, Port => $TS3_HOSTPORT);
 $telnet->waitfor('/Welcome */i');
-$telnet->print('login ts3queryUsername ts3queryPassword');
+
+$telnet->print("login $TS3_QUERYLOGIN $TS3_QUERYPASSWORD");
 $telnet->waitfor('/error id=0 msg=ok/i');
 $telnet->print('use sid=1');
 $telnet->waitfor('/error id=0 msg=ok/i');
 $telnet->print("clientlist");
 my @TELNETRAW = $telnet->waitfor('/error id=0 msg=ok/i');
-$telnet->close;
+# $telnet->close;
+$telnet->print("quit");
 
 ##############################
 ## string modification part ##
@@ -46,7 +67,11 @@ my $CLDBID      = "";
 my $CLNAME      = "";
 
 #### open connection to database
+
+my ($db_user, $db_name, $db_pass) = ($DB_USERNAME, $DB_DATABASE, $DB_PASSWORD);
+
 my $dbh = DBI->connect("DBI:mysql:database=$db_name", $db_user, $db_pass);
+## my $dbh = DBI->connect("DBI:mysql:database=$DB_DATABASE", $DB_USERNAME, $DB_PASSWORD);
 
 foreach my $client ( @clients )
 {
