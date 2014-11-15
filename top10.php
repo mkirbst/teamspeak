@@ -14,10 +14,10 @@
     <caption><a href=http://moerbst.de>moerbst.de Teamspeak3 Camper Top10</a></caption>
                 <thead>
                 <tr>
-                                <th>Platz</th>
-                                <th>Name</th>
-                                <th>Teamspeak-ID</th>
-                                <th>Zeit</th>
+                                <th>rank</th>
+                                <th>name</th>
+                                <th>TS3 server id</th>
+                                <th>time</th>
             </tr>
                 </thead>
         <tbody>
@@ -60,14 +60,14 @@ function secondsToTime($inputSeconds) {
 
 
 // create database connection, credentials same as in perl script
-$link = mysql_connect("127.0.0.1", "myts3MysqlUser", "MySqlPassword")
+$link = mysql_connect("127.0.0.1", "ts3queryuser", "Start123!")
     or die("mysql connection error: " . mysql_error());
 # echo "mysql connection successful";
-mysql_select_db("munin") or die("could not select specified database");
+mysql_select_db("ts3db") or die("could not select specified database");
 
 // execute the mysql statement
 $query = "SELECT CLNAME,CLDBID,Minutes FROM ts3top  WHERE clname NOT LIKE '%bot%' AND clname NOT LIKE  '%127.0.0.1%' ORDER BY Minutes DESC, CLDBID ASC";
-$result = mysql_query($query) or die("Anfrage fehlgeschlagen: " . mysql_error());
+$result = mysql_query($query) or die("query failed: " . mysql_error());
 
 // print the output as html
 while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {

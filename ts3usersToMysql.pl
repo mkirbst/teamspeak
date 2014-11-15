@@ -18,22 +18,20 @@
 # mysql> FLUSH PRIVILEGES;
 # mysql> QUIT;
 
-
-
 use strict;
 use Net::Telnet;
 use DBI;
 
 
-my $LOGFILE  = "ts3perl.log";
+my $LOGFILE  = "ts3perl.log"; 		# watch this file for additional debug output if the script can't poll information from the TS3 server
 
 # TS3 server variables
 my $TS3_HOSTNAME = "127.0.0.1";
 my $TS3_HOSTPORT = "10011";
 my $TS3_QUERYLOGIN = "queryadmin";
-my $TS3_QUERYPASSWORD = "OmzjE41R";
+my $TS3_QUERYPASSWORD = "OmzjE41R";	# replace this example with your valid TS3 queryadmin server password
 
-# mysql variables
+# mysql variables			
 my $DB_DATABASE	= "ts3db";
 my $DB_USERNAME = "ts3queryuser";
 my $DB_PASSWORD = "Start123!";
@@ -54,8 +52,7 @@ $telnet->print('use sid=1');
 $telnet->waitfor('/error id=0 msg=ok/i');
 $telnet->print("clientlist");
 my @TELNETRAW = $telnet->waitfor('/error id=0 msg=ok/i');
-# $telnet->close;
-$telnet->print("quit");
+$telnet->close;
 
 ##############################
 ## string modification part ##
@@ -67,23 +64,15 @@ my $CLDBID      = "";
 my $CLNAME      = "";
 
 #### open connection to database
-
 my ($db_user, $db_name, $db_pass) = ($DB_USERNAME, $DB_DATABASE, $DB_PASSWORD);
-
 my $dbh = DBI->connect("DBI:mysql:database=$db_name", $db_user, $db_pass);
-## my $dbh = DBI->connect("DBI:mysql:database=$DB_DATABASE", $DB_USERNAME, $DB_PASSWORD);
 
 foreach my $client ( @clients )
 {
         # process client only if clienttype 0 - normal teamspeak client
         if ($client =~ m/client_type=0/)
         {
-#               print "$client \n\n";
-
                 my @clientline = split(' ', $client);
-
-
-                ##              
                 foreach my $clientpart ( @clientline )
                 {
                         ## process client_datbase_id
@@ -93,7 +82,6 @@ foreach my $client ( @clients )
                                 my @TMPCLDBID = split("=", $clientpart);
                                 $CLDBID = @TMPCLDBID[1]
                         }
-
                         ## process client_nickname
                         if ($clientpart =~ m/^client_nickname=/)
                         {
@@ -105,18 +93,12 @@ foreach my $client ( @clients )
                         }
 
                 }
-
                 ## INSERT INTO DATABASE
-
                 my $sth = $dbh->prepare('INSERT INTO ts3top (CLDBID, CLNAME, Minutes) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE CLNAME=? ,Minutes=Minutes+5 ');
-
                 $sth->execute($CLDBID, $CLNAME, 5, $CLNAME) or die $DBI::errstr;;
-
                 $sth->finish();
-
         }
 }
-        
 ## disconnect from database
 $dbh->disconnect();
 
