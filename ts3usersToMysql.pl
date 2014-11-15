@@ -4,7 +4,14 @@
 # this script has to be executed every 5 minutes and polls the users currently on the server
 # if you want another timespan than 5 minutes, please modify the mysql statement at the end
 #
+# Please check that you have a sufficient perl environment on your server and you have installed 
+# the Net::Telnet module. For example in ubuntu you have to type:
+# $ sudo apt-get install libnet-telnet-perl
 #
+# You also need a mysql database, in which are the values for your ts3users are stored. 
+# THE PASSWORD IS A EXAMPLE, PLEASE CHOOSE AN OWN, SECURE PASSWORD AND SET IT UP IN BOOTH FILES, THE PERL AND PHP FILE.. 
+# SEE: https://www.schneier.com/blog/archives/2014/03/choosing_secure_1.html
+# 
 # ---- howto create approriate mysql database ----
 # create a query login name+password in your TS3 server an put it into line 31 and also 
 # a appropriate database as following: (my testdatabase here is called ts3db and the new table is named ts3top)
