@@ -19,9 +19,7 @@
 # $ mysql -u root -p
 # mysql> CREATE DATABASE IF NOT EXISTS ts3db;
 # mysql> GRANT ALL ON *.* TO 'ts3queryuser'@'localhost' IDENTIFIED BY 'Start123!';
-# mysql> CREATE TABLE IF NOT EXISTS `ts3db`.`ts3top`\
-#     -> (`CLDBID` INT NOT NULL , `CLNAME` VARCHAR(64) NOT NULL , `Minutes` BIGINT, PRIMARY KEY (`CLDBID`))\ 
-#     -> ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+# mysql> CREATE TABLE IF NOT EXISTS `ts3db`.`ts3top` (`CLDBID` INT NOT NULL , `CLNAME` VARCHAR(64) NOT NULL , `Minutes` BIGINT, PRIMARY KEY (`CLDBID`)) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 # mysql> FLUSH PRIVILEGES;
 # mysql> QUIT;
 
@@ -29,20 +27,18 @@ use strict;
 use Net::Telnet;
 use DBI;
 
-
-my $LOGFILE  = "ts3perl.log"; 		# watch this file for additional debug output if the script can't poll information from the TS3 server
+my $LOGFILE  = "ts3usersToMysql.log"; 		# watch this file for additional debug output if the script can't poll information from the TS3 server
 
 # TS3 server variables
 my $TS3_HOSTNAME = "127.0.0.1";
 my $TS3_HOSTPORT = "10011";
 my $TS3_QUERYLOGIN = "queryadmin";
-my $TS3_QUERYPASSWORD = "OmzjE41R";	# replace this example with your valid TS3 queryadmin server password
+my $TS3_QUERYPASSWORD = "SUPERSECURETS3PASSWORD";	# replace this example with your valid TS3 queryadmin server password
 
 # mysql variables			
 my $DB_DATABASE	= "ts3db";
 my $DB_USERNAME = "ts3queryuser";
-my $DB_PASSWORD = "Start123!";
-
+my $DB_PASSWORD = "SUPERSECUREMYSQLPASSWORD";
 
 
 #################
@@ -95,6 +91,10 @@ foreach my $client ( @clients )
                                 # remove trailing client_nickname= from string
                                 my @TMPCLNAME = split("=", $clientpart);
                                 $CLNAME = @TMPCLNAME[1];
+				
+				## TS3 server replaces whitespaces in player or channel names with \s, we replace this by underscore
+				$CLNAME =~ s/\\s/_/g;		
+		
                                 ## clean up TS names from st**id id**ts who use every special char UTF16 has available in their TS names ....
                                 $CLNAME =~ s/[^a-zA-Z0-9_-]/_/g;
                         }
