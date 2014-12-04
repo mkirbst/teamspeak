@@ -101,8 +101,8 @@ foreach my $client ( @clients )
 
                 }
                 ## INSERT INTO DATABASE
-                my $sth = $dbh->prepare('INSERT INTO ts3top (CLDBID, CLNAME, Minutes) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE CLNAME=? ,Minutes=Minutes+5 ');
-                $sth->execute($CLDBID, $CLNAME, 5, $CLNAME) or die $DBI::errstr;;
+                my $sth = $dbh->prepare('INSERT INTO ts3top (CLDBID, CLNAME, Minutes) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE CLNAME=? ,Minutes=Minutes+1 ');
+                $sth->execute($CLDBID, $CLNAME, 1, $CLNAME) or die $DBI::errstr;;
                 $sth->finish();
         }
 }
