@@ -4,6 +4,8 @@
 ## call this script every few minutes to create actual html output page, i recommend nice -n 19 script
 ## and dont forget: im no webdesigner, so all my websites are ugly ;)
 
+# output looks like: https://raw.githubusercontent.com/mkirbst/teamspeak/master/pic-ts3top10detailed.png
+
 use strict;
 use Net::Telnet;
 use DBI;
