@@ -1,3 +1,7 @@
+#!/usr/bin/perl
+#
+# this is the updated version from top10 ts user script
+# output looks like: https://raw.githubusercontent.com/mkirbst/teamspeak/master/pic-ts3top10detailed.png
 
 use strict;
 use Net::Telnet;
