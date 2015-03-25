@@ -31,11 +31,9 @@
 #
 # There are only 3 additional lines at the end of this script, as it uses the same database handler
 # The tables primary key consists of the TS ID and the username, so every time the database sees a new id+username combination,
-# a new database entry is created, ensuring to log the nicks of every user, represented by his or her TS ID
+# a new database entry is created, ensuring to log the nicks of every user, represented by his or her TS ID,
+# otherwise only lastseen attribute is updated to the actual timestamp NOW() 
 #######################################################################################################################################
-
-
-
 use strict;
 use Net::Telnet;
 use DBI;
@@ -127,9 +125,9 @@ foreach my $client ( @clients )
 
 		###################################################################################################
                 ## Part II - Log all alias names a user uses:
-                my $sthaliases = $dbh->prepare('INSERT INTO ts3aliases (id, alias, firstseen, lastseen) VALUES (?, ?, NOW(), NOW()) ON DUPL$
+                my $sthaliases = $dbh->prepare('INSERT INTO ts3aliases (id, alias, firstseen, lastseen) VALUES (?, ?, NOW(), NOW()) ON DUPLICATE KEY UPDATE firstseen = firstseen, lastseen = NOW() ');                
                 $sthaliases->execute($CLDBID, $CLNAME) or die $DBI::errstr;;
-                $sthaliases->finish();
+      		$sthaliases->finish();
                 ## /Part II
                 ###################################################################################################
         }
