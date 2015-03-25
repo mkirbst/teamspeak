@@ -102,17 +102,10 @@ foreach my $client ( @clients )
                                 # remove trailing client_nickname= from string
                                 my @TMPCLNAME = split("=", $clientpart);
                                 $CLNAME = @TMPCLNAME[1];
-<<<<<<< HEAD
-				
-				## TS3 server replaces whitespaces in player or channel names with \s, we replace this by underscore
-				$CLNAME =~ s/\\s/_/g;		
-		
-=======
 
                                 ## TS3 server replaces whitespaces in player or channel names with \s, we replace this by underscore
                                 $CLNAME =~ s/\\s/_/g;
 
->>>>>>> 978d96cebda6170fc7eb668078696ab8b1864dde
                                 ## clean up TS names from st**id id**ts who use every special char UTF16 has available in their TS names ....
                                 $CLNAME =~ s/[^a-zA-Z0-9_-]/_/g;
                         }
