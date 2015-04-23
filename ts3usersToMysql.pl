@@ -27,7 +27,7 @@
 ## 20150325181100: PART II - Logging also the nick names, every user uses
 # create appropriate table:
 #
-# CREATE TABLE ts3aliases (id INT NOT NULL, alias VARCHAR(128) NOT NULL, firstseen TIMESTAMP, lastseen TIMESTAMP, PRIMARY KEY(id, alias));
+# CREATE TABLE ts3aliases (id INT NOT NULL, alias VARCHAR(128) NOT NULL, firstseen TIMESTAMP, lastseen TIMESTAMP, Minutes BIGINT, PRIMARY KEY(id, alias));
 #
 # There are only 3 additional lines at the end of this script, as it uses the same database handler
 # The tables primary key consists of the TS ID and the username, so every time the database sees a new id+username combination,
@@ -112,14 +112,14 @@ foreach my $client ( @clients )
 
                 }
                 ## INSERT INTO DATABASE
-                my $sth = $dbh->prepare('INSERT INTO ts3top (CLDBID, CLNAME, Minutes) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE CLNAME=? ,Minutes=Minutes+1 ');
+                my $sth = $dbh->prepare('INSERT INTO ts3top (CLDBID, CLNAME, Minutes) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE CLNAME=?, Minutes=Minutes+1 ');
                 $sth->execute($CLDBID, $CLNAME, 1, $CLNAME) or die $DBI::errstr;;
                 $sth->finish();
 
 		###################################################################################################
                 ## Part II - Log all alias names a user uses:
-                my $sthaliases = $dbh->prepare('INSERT INTO ts3aliases (id, alias, firstseen, lastseen) VALUES (?, ?, NOW(), NOW()) ON DUPLICATE KEY UPDATE firstseen = firstseen, lastseen = NOW() ');                
-                $sthaliases->execute($CLDBID, $CLNAME) or die $DBI::errstr;;
+                my $sthaliases = $dbh->prepare('INSERT INTO ts3aliases (id, alias, firstseen, lastseen, Minutes) VALUES (?, ?, NOW(), NOW(), ?) ON DUPLICATE KEY UPDATE firstseen = firstseen, lastseen = NOW(), Minutes=Minutes+1 ');                
+                $sthaliases->execute($CLDBID, $CLNAME, 1) or die $DBI::errstr;;
       		$sthaliases->finish();
                 ## /Part II
                 ###################################################################################################
