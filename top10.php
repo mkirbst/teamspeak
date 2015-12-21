@@ -60,7 +60,7 @@ function secondsToTime($inputSeconds) {
 
 
 // create database connection, credentials same as in perl script
-$link = mysql_connect("127.0.0.1", "ts3queryuser", "Start123!")
+$link = mysql_connect("127.0.0.1", "ts3queryuser", "passwd")
     or die("mysql connection error: " . mysql_error());
 # echo "mysql connection successful";
 mysql_select_db("ts3db") or die("could not select specified database");
